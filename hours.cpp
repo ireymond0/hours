@@ -4,6 +4,8 @@
 #include <ctime>
 using namespace std;
 
+string FILE_ERROR = "ERROR: could not open the file\n";
+
 /******************************************************************************
 * function inputs an int and returns a string
 * if i = 0 return time string
@@ -135,6 +137,9 @@ void clockIn()
   hrFile.close();
 }
 
+/******************************************************************************
+* write something...
+*******************************************************************************/
 void clockOut()
 {
   ofstream hrFile;
@@ -164,6 +169,9 @@ void clockOut()
   hrFile.close();
 }
 
+/******************************************************************************
+* ends the pay period by clearing out the cpp file
+*******************************************************************************/
 void endPayPeriod()
 {
   ofstream cppFile;
@@ -179,6 +187,10 @@ void endPayPeriod()
   }
 }
 
+/******************************************************************************
+* start the pay period, initialises the cpp file with the date the pay period
+* starts on
+*******************************************************************************/
 void startPayPeriod()
 {
   ofstream cppFile;
@@ -194,6 +206,9 @@ void startPayPeriod()
   }
 }
 
+/******************************************************************************
+* User options
+*******************************************************************************/
 void options()
 {
   char input;
@@ -214,10 +229,40 @@ void options()
     cout << "ERROR: no correct input detected. Exiting...";
 }
 
+/******************************************************************************
+* write something...
+*******************************************************************************/
+int dailyHours()
+{
+  ifstream in;
+  string fileName = getDateTime(1) + ".txt";
+  cout << fileName << endl;
+  in.open(fileName);
+  if(!in.is_open())
+  {
+    cout << FILE_ERROR;
+    return -1;
+  }
+  else
+  {
+    string file;
+    while(!in.eof())
+    {
+      getline(cin,file);
+    }
+    cout << file << endl;
+    return 0;
+  }
+}
+
+/******************************************************************************
+* MAIN
+*******************************************************************************/
 int main(int argc, char** argv)
 {
   char input;
   cout << endl << "** Luxion Clock Utility **\n" << endl;
+  int i = dailyHours();
 
   options();
 

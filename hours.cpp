@@ -4,38 +4,6 @@
 #include <ctime>
 using namespace std;
 
-// string openfile()
-// {
-//   string file;
-//   ifstream hrFile;
-//   hrFile.open("hours.txt");
-//   if(!hrFile.is_open())
-//   {
-//     cout << "Error: Could not open hours.txt" << endl;
-//   }
-//   while(!hrFile.eof())
-//   {
-//
-//   }
-//   hrFile.close();
-//   return file;
-// }
-
-// void writeFile()
-// {
-//   ofstream hrFile;
-//   hrFile.open("hours.txt", ios::app);
-//   if(!hrFile.is_open())
-//   {
-//     cout << "error";
-//   }
-//   for(int i = 0; i < 3; ++i)
-//   {
-//     hrFile << "Testing \n";
-//   }
-//   hrFile.close();
-// }
-
 /******************************************************************************
 * function inputs an int and returns a string
 * if i = 0 return time string
@@ -75,9 +43,71 @@ string getDateTime(int i)
   }
 }
 
-/**
+bool checkCurrentPayPeriod()
+{
+  ifstream cppFile;
+  cppFile.open("cpp");
+  if(!cppFile.is_open())
+  {
+    cout << "ERROR: could not open the cpp file\n";
+  }
+  string d;
+  cppFile >> d;
+  cppFile.close();
+  if (d == "" || d == " ")
+  {
+    return false;
+  }
+  else
+    return true;
+}
+
+string writeCppFile(string s)
+{
+  if(!checkCurrentPayPeriod())
+  {
+    cout << "\nNew pay period starting today " + s << endl << endl;
+
+    ofstream out;
+    out.open("cpp");
+    if(!out.is_open())
+    {
+      cout << "Error: could not open the cpp file\n";
+    }
+    out << s;
+    out.close();
+
+    return s;
+  }
+  else
+  {
+    ifstream cppFile;
+    cppFile.open("cpp");
+    if(!cppFile.is_open())
+    {
+      cout << "Error: could not open the cpp file\n";
+    }
+    string d;
+    cppFile >> d;
+    cppFile.close();
+    cout << "\nPay period starting on " + d << endl <<endl;
+
+    ofstream out;
+    out.open("cpp");
+    if(!out.is_open())
+    {
+      cout << "Error: could not open the cpp file\n";
+    }
+    out << d;
+    out.close();
+
+    return d;
+  }
+}
+
+/******************************************************************************
 * write something...
-***/
+*******************************************************************************/
 void clockIn()
 {
   ofstream hrFile;
@@ -86,8 +116,7 @@ void clockIn()
   cout << "Are you coming back from lunch? (y/n)";
   cin >> lunch;
 
-  fileName = "hours_" + getDateTime(2) + ".txt";
-  cout << "test: " << fileName << endl;
+  fileName = writeCppFile(getDateTime(1))+".txt";
   hrFile.open(fileName, ios::app);
   if(!hrFile.is_open())
   {
@@ -106,6 +135,11 @@ void clockIn()
   hrFile.close();
 }
 
+void clockOut()
+{
+
+}
+
 
 int main(int argc, char** argv)
 {
@@ -113,11 +147,12 @@ int main(int argc, char** argv)
   cout << endl << "** Luxion Clock Utility **\n" << endl;
 
   cout << "What would you like to do?" << endl;
-  cout << "i = clock-in\n" << "o = clock-out\n" << "d = daily hours\n" <<
-    "p = paycheck hours\n";
+  cout << "n = new pay period\n" << "i = clock-in\n" << "o = clock-out\n" <<
+    "e = end pay period" << "d = daily hours\n" << "p = paycheck hours\n";
   cin >> input;
   if(input == 'i')
     clockIn();
+
 
 
   return 0;

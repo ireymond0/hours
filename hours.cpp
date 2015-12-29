@@ -123,37 +123,110 @@ void clockIn()
     cout << "ERROR: could not open the hours file\n";
   }
 
-  if(lunch == 'n')
+  if(lunch != 'y')
   {
     hrFile << "START: " << getDateTime(1) << endl;
     hrFile << "in: " << getDateTime(0) << endl;
   }
   else
   {
-    hrFile << "Clocked in at " << getDateTime(0) << endl;
+    hrFile << "in: " << getDateTime(0) << endl;
   }
   hrFile.close();
 }
 
 void clockOut()
 {
+  ofstream hrFile;
+  string fileName;
+  char lunch;
+  cout << "Are you leaving to lunch? (y/n)";
+  cin >> lunch;
 
+  fileName = writeCppFile(getDateTime(1))+".txt";
+  hrFile.open(fileName,ios::app);
+  if(!hrFile.is_open())
+  {
+    cout << "ERROR: could not open the hours file\n";
+  }
+  else
+  {
+    if(lunch != 'y')
+    {
+      hrFile << "out: " << getDateTime(0) << endl;
+      hrFile << "END: " << getDateTime(1) << endl;
+    }
+    else
+    {
+      hrFile << "out: " << getDateTime(0) << endl;
+    }
+  }
+  hrFile.close();
 }
 
+void endPayPeriod()
+{
+  ofstream cppFile;
+  cppFile.open("cpp");
+  if(!cppFile.is_open())
+  {
+    cout << "ERROR: could not open the cpp file\n";
+  }
+  else
+  {
+    cppFile << "";
+    cout << "\nFinished pay period on " << getDateTime(1) << endl;
+  }
+}
 
-int main(int argc, char** argv)
+void startPayPeriod()
+{
+  ofstream cppFile;
+  cppFile.open("cpp");
+  if(!cppFile.is_open())
+  {
+    cout << "ERROR: could not open the cpp file\n";
+  }
+  else
+  {
+    cppFile << getDateTime(1);
+    cout << "\nNew pay period starting on " << getDateTime(1) << endl;
+  }
+}
+
+void options()
 {
   char input;
-  cout << endl << "** Luxion Clock Utility **\n" << endl;
-
   cout << "What would you like to do?" << endl;
   cout << "n = new pay period\n" << "i = clock-in\n" << "o = clock-out\n" <<
     "e = end pay period" << "d = daily hours\n" << "p = paycheck hours\n";
   cin >> input;
   if(input == 'i')
     clockIn();
+  else if(input == 'o')
+    clockOut();
+  else if(input == 'e')
+    endPayPeriod();
+  else if(input == 'n')
+    startPayPeriod();
 
+  else
+    cout << "ERROR: no correct input detected. Exiting...";
+}
 
+int main(int argc, char** argv)
+{
+  char input;
+  cout << endl << "** Luxion Clock Utility **\n" << endl;
+
+  options();
+
+  cout << "Would you like to do anything else? (y/n)";
+  cin >> input;
+  if(input == 'y')
+    options();
+  else
+    return 0;
 
   return 0;
 }

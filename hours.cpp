@@ -5,13 +5,19 @@ using namespace std;
 
 string openfile()
 {
-  ofstream hrFile;
-  if(!hrFile.open("hours.txt"))
+  string file;
+  ifstream hrFile;
+  hrFile.open("hours.txt");
+  if(!hrFile.is_open())
   {
     cout << "Error: Could not open hours.txt" << endl;
   }
-  hrFile << "Test.\n";
+  while(!hrFile.eof())
+  {
+    
+  }
   hrFile.close();
+  return file;
 }
 
 int main(int argc, char** argv)

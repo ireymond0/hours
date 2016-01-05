@@ -1,10 +1,22 @@
 #include <iostream>
+#include <sstream>
 #include <fstream>
 #include <string>
 #include <ctime>
 using namespace std;
 
 string FILE_ERROR = "ERROR: could not open the file\n";
+
+void options();
+string getDateTime(int i);
+bool checkCurrentPayPeriod();
+string writeCppFile(string s);
+void clockIn();
+void clockOut();
+void endPayPeriod();
+void startPayPeriod();
+int dailyHours();
+int getTimecardSize();
 
 /******************************************************************************
 * function inputs an int and returns a string
@@ -23,7 +35,7 @@ string getDateTime(int i)
 
   if(i == 0)
   {
-    strftime(buffer, 80, "%I:%M", timeinfo);
+    strftime(buffer, 80, "%H:%M", timeinfo);
     string clckTime(buffer);
     return clckTime;
   }
@@ -135,6 +147,7 @@ void clockIn()
     hrFile << "in: " << getDateTime(0) << endl;
   }
   hrFile.close();
+  options();
 }
 
 /******************************************************************************
@@ -224,7 +237,6 @@ void options()
     endPayPeriod();
   else if(input == 'n')
     startPayPeriod();
-
   else
     cout << "ERROR: no correct input detected. Exiting...";
 }
@@ -234,25 +246,62 @@ void options()
 *******************************************************************************/
 int dailyHours()
 {
+  int hours = 0;
+  int numOfLines = getTimecardSize();
+
   ifstream in;
   string fileName = getDateTime(1) + ".txt";
-  cout << fileName << endl;
   in.open(fileName);
-  if(!in.is_open())
+  if(in.is_open())
   {
-    cout << FILE_ERROR;
-    return -1;
+    string *file = new string[numOfLines];
+
+    for(int i = 0; i < numOfLines; ++i)
+    {
+      getline(in,file[i]);
+    }
+
+    istringstream ss(file[1]);
+    string h[3];
+
+    for (int i = 0; i < 3; ++i)
+    {
+      getline(ss, h[i], ':');
+    }
+    cout << h[1] << endl;
+    int hr = atoi(h[1].c_str());
+    cout << hr << endl;
+
+    in.close();
+    delete [] file;
   }
   else
   {
-    string file;
-    while(!in.eof())
-    {
-      getline(cin,file);
-    }
-    cout << file << endl;
-    return 0;
+    options();
   }
+  return hours;
+}
+
+/******************************************************************************
+* write something...
+*******************************************************************************/
+int getTimecardSize()
+{
+  int numOfLines = 0;
+
+  ifstream in;
+  string fileName = getDateTime(1) + ".txt";
+  in.open(fileName);
+  if(in.is_open())
+  {
+    string file;
+    while(getline(in,file))
+    {
+      numOfLines++;
+    }
+    in.close();
+  }
+  return numOfLines;
 }
 
 /******************************************************************************
@@ -263,6 +312,7 @@ int main(int argc, char** argv)
   char input;
   cout << endl << "** Luxion Clock Utility **\n" << endl;
   int i = dailyHours();
+  cout << "You have " << i << "h so far today..." << endl;
 
   options();
 

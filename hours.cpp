@@ -213,7 +213,7 @@ void options()
 {
   char input;
   cout << "What would you like to do?" << endl;
-  cout << "n = new pay period\n" << "i = clock-in\n" << "o = clock-out\n" <<
+  cout << "i = clock-in\n" << "o = clock-out\n" << "n = new pay period\n" <<
     "e = end pay period" << "d = daily hours\n" << "p = paycheck hours\n";
   cin >> input;
   if(input == 'i')
